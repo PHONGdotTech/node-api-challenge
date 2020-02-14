@@ -40,13 +40,23 @@ Demonstrate your understanding of this Sprint's concepts by answering the follow
 
 - [ ] Mention two parts of Express that you learned about this week.
 
+Express is a restful api server framework built using node. Two parts we learned about express this week include routing and middleware.
+
 - [ ] Describe Middleware?
+
+Middleware functions are functions with access to the request and response object, can make changes to those objects, can execute any other code, and can either end the request-response cycle or call the next piece of middleware.
 
 - [ ] Describe a Resource?
 
+A resource is anything a client interacts with, and each resource is assigned a URL. For each resource, multiple types of interactions may take place depending on what the resource is able to handle and what the client requests of the resource.
+
 - [ ] What can the API return to help clients know if a request was successful?
 
+To help clients know if a request was successful, the API returns a status code and a JSON object or response message.
+
 - [ ] How can we partition our application into sub-applications?
+
+Applications can be partitioned into sub-applications by using the router method within express, to give each possible resource a different endpoint and purpose.
 
 ## Minimum Viable Product
 
