@@ -34,6 +34,25 @@ router.get("/:id", validateId, (req, res)=>{
     res.status(200).json(req.project)
 })
 
+//Read all actions belonging to a project
+router.get("/:id/actions", validateId, (req,res)=>{
+    Projects.getProjectActions(req.params.id)
+    .then(actions=>{
+        //if actions empty, include a message, else just return available actions
+        actions.length === 0 
+        ? 
+        res.status(200).json({
+            message:"This project has no actions.",
+            actions: actions
+        }) 
+        :
+        res.status(200).json(actions)
+    })
+    .catch(err=>{
+        res.status(500).json({message:"There was an error getting actions belonging to this project."})
+    })
+})
+
 //Update a project
 router.put("/:id", validateId, (req, res)=>{
     Projects.update(req.params.id, req.body)
