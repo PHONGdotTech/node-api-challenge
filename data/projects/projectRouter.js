@@ -40,6 +40,7 @@ router.put("/:id", validateId, (req, res)=>{
     .then(updatedProject=>{
         res.status(200).json({
             message: "Successfully updated.",
+            oldProject: req.project,
             updatedProject: updatedProject
         })
     })
@@ -68,7 +69,7 @@ function validateId(req, res, next){
         (req.project = project, next())
     })
     .catch(err=>{
-        res.status(500).json({message: "There was an error getting the project from the database"})
+        res.status(500).json({message: "There was an error getting the project from the server to verify it exists."})
     })
 }
 
