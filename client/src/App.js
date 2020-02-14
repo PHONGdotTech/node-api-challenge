@@ -8,7 +8,7 @@ function App() {
   return (
     <div className="App">
       <Switch>
-        {/* <Route path="/:id" component={Project} /> */}
+        <Route path="/:id" component={Project} />
         <Route path="/" component={Projects} />
         <Route component={Projects} />
       </Switch>

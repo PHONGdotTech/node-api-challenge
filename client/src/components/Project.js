@@ -3,10 +3,9 @@ import {useHistory, useParams} from "react-router-dom";
 import axios from "axios";
 
 const Project = () => {
-    const [project, setProject] = useState([]);
+    const [project, setProject] = useState({id: "", name: "", actions: []});
     const history = useHistory();
     const {id} = useParams();
-    console.log(project)
 
     useEffect(()=>{
         axios.get(`http://localhost:5000/api/projects/${id}`)
@@ -18,12 +17,21 @@ const Project = () => {
         })
     },[])
 
-    console.log(project.actions)
     return (
         <div>
+            <button onClick={()=>history.push("/")} >Back to Projects</button>
             <p>Project ID: {project.id}</p>
             <p>Name: {project.name}</p>
-            <p>Actions: {project.actions}</p>
+            <div>
+                <h4>Actions:</h4> 
+                {project.actions.map(action => (
+                    <div key={action.id} style={{border: "solid black 1px", margin: "5%"}}>
+                        <p>Action description: {action.description}</p>
+                        <p>Action notes: {action.notes}</p>
+                    </div>
+                ))}
+            </div>
+
         </div>
     )
 }
