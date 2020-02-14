@@ -6,7 +6,7 @@ const Actions = require("../helpers/actionModel.js")
 const Projects = require("../helpers/projectModel.js")
 
 //Create an action
-router.post("/", validateProjectId, (req, res)=> {
+router.post("/", validateActionBody, validateProjectId, (req, res)=> {
     Actions.insert(req.body)
     .then(inserted=>{
         res.status(201).json({
@@ -36,7 +36,7 @@ router.get("/:id", validateActionId, (req, res)=>{
 })
 
 //Update an action
-router.put("/:id", validateActionId, (req,res)=>{
+router.put("/:id", validateActionBody, validateActionId, (req,res)=>{
     Actions.update(req.params.id, req.body)
     .then(updatedAction=>{
         res.status(200).json({
@@ -66,7 +66,7 @@ function validateProjectId(req, res, next){
     Projects.get(req.body.project_id)
     .then(project=>{
         // if no project exists, respond with project not found, else assign to req.project and next
-        !project ? res.status(404).json({message:"Project not found."}) : 
+        !project ? res.status(404).json({errorMessage:"Project not found."}) : 
         (req.project = project, next())
     })
     .catch(err=>{
@@ -78,12 +78,23 @@ function validateActionId(req, res, next){
     Actions.get(req.params.id)
     .then(action=>{
         // if no action exists, respond with action not found, else assign to req.action and next
-        !action ? res.status(404).json({message:"Action not found."}) : 
+        !action ? res.status(404).json({errorMessage:"Action not found."}) : 
         (req.action = action, next())
     })
     .catch(err=>{
         res.status(500).json({message: "There was an error getting the action from the server to verify it exists."})
     })
+}
+
+function validateActionBody(req, res, next){
+    Object.keys(req.body).length === 0 && req.body.constructor === Object 
+    ? 
+    res.status(400).json({errorMessage:"Missing action data in the request body."}) 
+    :
+    !req.body.description || !req.body.notes || !req.body.project_id ? res.status(400).json({
+        errorMessage:"'project_id', 'description', and 'notes' are required.",
+        youEntered: req.body
+    }) : next()
 }
 
 module.exports = router;

@@ -5,7 +5,7 @@ const router = express.Router();
 const Projects = require("../helpers/projectModel.js")
 
 //Create a project
-router.post("/", (req, res)=> {
+router.post("/", validateProjectBody, (req, res)=> {
     Projects.insert(req.body)
     .then(inserted=>{
         res.status(201).json({
@@ -54,7 +54,7 @@ router.get("/:id/actions", validateId, (req,res)=>{
 })
 
 //Update a project
-router.put("/:id", validateId, (req, res)=>{
+router.put("/:id", validateId, validateProjectBody, (req, res)=>{
     Projects.update(req.params.id, req.body)
     .then(updatedProject=>{
         res.status(200).json({
@@ -84,12 +84,27 @@ function validateId(req, res, next){
     Projects.get(req.params.id)
     .then(project=>{
         // if no project exists, respond with project not found, else assign to req.project and next
-        !project ? res.status(404).json({message:"Project not found."}) : 
+        !project ? res.status(404).json({errorMessage:"Project not found."}) : 
         (req.project = project, next())
     })
     .catch(err=>{
         res.status(500).json({message: "There was an error getting the project from the server to verify it exists."})
     })
+}
+
+function validateProjectBody(req, res, next){
+    Object.keys(req.body).length === 0 && req.body.constructor === Object 
+    ? 
+    res.status(400).json({errorMessage:"Missing project data in the request body."}) 
+    :
+        !req.body.name || !req.body.description 
+        ? 
+        res.status(400).json({
+            errorMessage:"'name' and 'description' are required.",
+            youEntered: req.body
+        }) 
+        : 
+        next()
 }
 
 module.exports = router;
