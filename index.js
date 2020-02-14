@@ -5,6 +5,12 @@ const actionRouter = require("./data/actions/actionRouter.js")
 const server = express();
 
 server.use(express.json());
+
+server.use((req, res, next) =>{
+    res.header('Access-Control-Allow-Origin', '*');
+    next();
+})
+
 server.use("/api/projects", projectRouter);
 server.use("/api/actions", actionRouter)
 
